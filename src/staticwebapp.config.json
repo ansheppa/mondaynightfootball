@@ -2,9 +2,17 @@
   {
     "route": "/index.html",
     "allowedRoles": ["admin"]
+<<<<<<< HEAD
   },
   {
       "route": "/.auth/login/twitter",
       "statusCode": 404
   }]
 }
+=======
+ },
+{
+      "route": "/.auth/login/twitter",
+      "statusCode": 404
+}
+>>>>>>> 11f210d8a39b8304c3c1e29495653661a9290920
