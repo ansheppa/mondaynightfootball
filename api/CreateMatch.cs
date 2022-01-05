@@ -29,7 +29,7 @@ namespace Company.Function
             var a =  new Match();
             a.PartitionKey = "p";
             a.RowKey = "r";
-            var tc = new TableClient("DefaultEndpointsProtocol=https;AccountName=storageaccountmnfa359;AccountKey=b32TMkqbD56Y1It5rXvzgqCmpmlesT60Ne2rXNo4Ye5Vza31202jm4/lOkH/n4w35tW68RJXsZq9To2m1VRyqA==;EndpointSuffix=core.windows.net","Match");
+            var tc = new TableClient(System.Environment.GetEnvironmentVariable("StorageConnectionString"),"Match");
             await tc.UpsertEntityAsync<Match>(a);
             return new OkObjectResult("Done");
         }
