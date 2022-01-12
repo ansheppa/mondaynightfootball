@@ -8,12 +8,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Data.Tables;
+using System.Collections.Generic;
+using System.Linq;
+using Azure;
 
 namespace Company.Function
 {
-    public static class CreateMatch
+    public static class ListMatches
     {   
-        [FunctionName("CreateMatch")]
+        [FunctionName("ListMatches")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -22,15 +25,21 @@ namespace Company.Function
             var a =  new Match();
             a.PartitionKey = "Match";
             a.RowKey = "r";
+            AsyncPageable<Match> queryResults;
+            List<Match> Matches = new List<Match>();
             try {
-            var tc = new TableClient(System.Environment.GetEnvironmentVariable("StorageConnectionString"),"Match");
-            await tc.UpsertEntityAsync<Match>(a);
+            TableClient tc = new TableClient(System.Environment.GetEnvironmentVariable("StorageConnectionString"),"Match");
+            queryResults = tc.QueryAsync<Match>(a => a.PartitionKey == "Match");
+            await foreach (var m in queryResults)
+            {
+                Matches.Add(m);
+            }
             }
             catch (Exception ex) {
                 log.LogError(ex.Message);
                 return new BadRequestObjectResult(ex.Message);
             }
-            return new OkObjectResult(a);
+            return new OkObjectResult(Matches);
         }
     }
 }
